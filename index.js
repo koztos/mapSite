@@ -11,5 +11,5 @@ app.use('/', index);
 app.use('/about', about);
 app.use('/map', map);
 
-const port = process.env.PORT || 8000
+const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Listening on port ${port}...`));
