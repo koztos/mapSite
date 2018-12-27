@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/head %>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 0px;
+        }
+
+        #infoWindow {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <% for(var [site, host] of hosts.entries()) { %>
+        <div id= "<%= site %>" style="display:none">
+            <%= host.alive %>
+        </div>
+    <% }; %>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var options = {
+                zoom: 5,
+                center: { lat: 48.4, lng: -89.843683 }
+            };
+
+            var map = new google.maps.Map(document.getElementById('map'), options);
+            var markerArray = new Map([
+                ['Brampton',
+                    {
+                        coor: { lat: 43.748650, lng: -80.99999 },
+                        content: "<span id='infoWindow'>Brampton</span>",
+                        iconImage: ""
+                    }],
+                ['Vancouver',
+                    {
+                        coor: { lat: 49.188770, lng: -122.895640 },
+                        content: "<span id='infoWindow'>Vancouver</span>",
+                        iconImage: ""
+                    }],
+                ['Calgary',
+                    {
+                        coor: { lat: 51.070730, lng: -114.006580 },
+                        content: "<span id='infoWindow'>Calgary</span>",
+                        iconImage: ""
+                    }],
+                ['Goreway',
+                    {
+                        coor: { lat: 43.744320, lng: -79.669830 },
+                        content: "<span id='infoWindow'>Goreway</span>",
+                        iconImage: ""
+                    }],
+                ['Ottawa',
+                    {
+                        coor: { lat: 45.405240, lng: -75.613190 },
+                        content: "<span id='infoWindow'>Ottawa</span>",
+                        iconImage: ""
+                    }],
+                ['Montreal',
+                    {
+                        coor: { lat: 45.48027, lng: -73.777590 },
+                        content: "<span id='infoWindow'>Montreal</span>",
+                        iconImage: ""
+                    }],
+                ['Halifax',
+                    {
+                        coor: { lat: 44.716670, lng: -63.598890 },
+                        content: "<span id='infoWindow'>Halifax</span>",
+                        iconImage: ""
+                    }],
+                ['St. Johns, NB',
+                    {
+                        coor: { lat: 45.213270, lng: -66.172920 },
+                        content: "<span id='infoWindow'>St. John's, NB</span>",
+                        iconImage: ""
+                    }],
+                ['St. Johns, NL',
+                    {
+                        coor: { lat: 47.531280, lng: -52.840540 },
+                        content: "<span id='infoWindow'>St. John's, NL</span>",
+                        iconImage: ""
+                    }],
+                ['Moncton',
+                    {
+                        coor: { lat: 46.101660, lng: -64.899060 },
+                        content: "<span id='infoWindow'>Moncton</span>",
+                        iconImage: ""
+                    }]
+            ]);
+
+            var offline = 'https://i.imgur.com/417YviZ.png';
+            var online = 'https://i.imgur.com/ovI4Iso.png';
+            
+            for(var [site, host] of markerArray.entries()){
+                if (document.getElementById(site) != null){
+                    if(document.getElementById(site).innerText.match('true')){
+                        host.iconImage = online;
+                        addMarker(host);
+                    }else { host.iconImage = offline; addMarker(host); }
+                } else { host.iconImage = offline; addMarker(host); }
+            }
+            
+            function addMarker(props) {
+                var marker = new google.maps.Marker({
+                    position: props.coor,
+                    map: map,
+                });
+                if (props.iconImage) {
+                    marker.setIcon(props.iconImage);
+                }
+                if (props.content) {
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: props.content
+                    });
+
+                    //infoWindow.open(map, marker);
+                    marker.addListener('click', () => {
+                        infoWindow.open(map, marker);
+                    })
+                }
+
+
+            }
+        }
+
+    </script>
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTCjCKuLzVJQ0hx83pbqhTwM6Cz-bJ_4c&callback=initMap">
+    </script>
+</body>
+
+
+</html>
