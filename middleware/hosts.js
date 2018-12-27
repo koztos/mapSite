@@ -2,7 +2,7 @@ const ping = require('ping');
 
 let hosts = new Map([
     ['Brampton', { address: '10.0.3.252', alive: false }],
-    ['Vancouver', { address: '192.168.12z.1', alive: false }],
+    ['Vancouver', { address: '192.168.12.1', alive: false }],
     ['Calgary', { address: '192.168.5.1', alive: false }],
     ['Goreway', { address: '192.168.13.1', alive: false }],
     ['Ottawa', { address: '192.168.9.1', alive: false }],
