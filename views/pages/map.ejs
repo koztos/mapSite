@@ -4,12 +4,19 @@
 <head>
     <% include ../partials/head %>
     <style>
+        body {
+            padding:0;
+            margin:0;
+        }
         #map {
             height: 500px;
             width: 100%;
             margin-top: 0px;
         }
-
+        .navbar, .navbar-default {
+            padding:0;
+            margin-bottom:0;
+        }
         #infoWindow {
             font-weight: bold;
         }
@@ -70,6 +77,7 @@
 </head>
 
 <body>
+    <% include ../partials/header %>
     <% for(var [site, host] of hosts.entries()) { %>
     <div id="<%= site %>" style="display:none">
         <span class="alive">
