@@ -5,18 +5,22 @@
     <% include ../partials/head %>
     <style>
         body {
-            padding:0;
-            margin:0;
+            padding: 0;
+            margin: 0;
         }
+
         #map {
             height: 500px;
             width: 100%;
             margin-top: 0px;
         }
-        .navbar, .navbar-default {
-            padding:0;
-            margin-bottom:0;
+
+        .navbar,
+        .navbar-default {
+            padding: 0;
+            margin-bottom: 0;
         }
+
         #infoWindow {
             font-weight: bold;
         }
@@ -25,6 +29,7 @@
         .popup-tip-anchor {
             height: 0;
             position: absolute;
+            /* transform: translate(0, -60%); */
             /* The max width of the info window. */
             width: 200px;
         }
@@ -55,7 +60,7 @@
             border-right: 6px solid transparent;
             border-top:
                 /* TIP_HEIGHT= */
-                8px solid white;
+                0px solid white;
         }
 
         /* The popup bubble itself. */
@@ -63,7 +68,8 @@
             position: absolute;
             top: 0;
             left: 0;
-            transform: translate(-50%, -100%);
+            transform: translate(-50%, -175%);
+
             /* Style the info window. */
             background-color: white;
             padding: 5px;
@@ -79,7 +85,7 @@
 <body>
     <% include ../partials/header %>
     <% for(var [site, host] of hosts.entries()) { %>
-    <div id="<%= site %>" style="display:none">
+    <div id="<%= site %>" style="display: none;">
         <span class="alive">
             <%= host.alive %></span>
         <span class="address">
@@ -169,11 +175,11 @@
                 if (document.getElementById(site) != null) {
                     if (document.getElementById(site).innerText.match('true')) {
                         host.iconImage = online;
-                        host.content = `${site}  -  ${document.getElementById(site).lastElementChild.innerText}`;
+                        host.content = `${site}    ${document.getElementById(site).lastElementChild.innerText}`;
                         addMarker(host);
                     } else {
                         host.iconImage = offline;
-                        host.content = `${site} - ${document.getElementById(site).lastElementChild.innerText}`;
+                        host.content = `${site}  ${document.getElementById(site).lastElementChild.innerText}`;
                         addMarker(host);
                     }
                 } else {
@@ -198,17 +204,17 @@
                     console.log(props.coor.lat);
                     console.log(props.coor.lng);
                     popup = new Popup(
-                        new google.maps.LatLng(props.coor.lat + 1, props.coor.lng),
+                        new google.maps.LatLng(props.coor.lat, props.coor.lng),
                         document.getElementById('content'),
-                        props.content);
+                        props.content,
+                        map);
                     popup.setMap(map);
                 })
-
+                
 
 
             }
         }
-        
         /** Defines the Popup class. */
         function definePopupClass() {
             /**
@@ -216,12 +222,13 @@
              * @param {!google.maps.LatLng} position
              * @param {!Element} content
              * @param {!String} contentText
+             * @param {!map} map
              * @constructor
              * @extends {google.maps.OverlayView}
              */
-            Popup = function (position, content, contentText) {
+            Popup = function (position, content, contentText, map) {
                 this.position = position;
-                
+
                 document.getElementById('content').innerText = contentText;
                 content.classList.add('popup-bubble-content');
 
@@ -232,9 +239,15 @@
                 this.anchor = document.createElement('div');
                 this.anchor.classList.add('popup-tip-anchor');
                 this.anchor.appendChild(pixelOffset);
-
+                var anchor = this.anchor;
                 // Optionally stop clicks, etc., from bubbling up to the map.
                 this.stopEventPropagation();
+                google.maps.event.addListener(map, "click", function (event) {
+                    document.getElementById('content').style.display = 'none';
+                });
+                
+                
+
             };
             // NOTE: google.maps.OverlayView is only defined once the Maps API has
             // loaded. That is why Popup is defined inside initMap().
@@ -243,13 +256,17 @@
             /** Called when the popup is added to the map. */
             Popup.prototype.onAdd = function () {
                 this.getPanes().floatPane.appendChild(this.anchor);
+                document.getElementById('content').style.display = 'block';
             };
 
             /** Called when the popup is removed from the map. */
             Popup.prototype.onRemove = function () {
-                this.getPanes().floatPane.removeChild(this.anchor);
-                // this.anchor.parentElement.removeChild(this.anchor);
+                console.log(this.anchor);
+                if (this.anchor.parentElement) {
+                    this.anchor.parentElement.remove(this.anchor);
+                }
             };
+
 
             /** Called when the popup needs to draw itself. */
             Popup.prototype.draw = function () {
@@ -264,9 +281,11 @@
                     this.anchor.style.left = divPosition.x + 'px';
                     this.anchor.style.top = divPosition.y + 'px';
                 }
-                // if (this.anchor.style.display !== display) {
-                //     this.anchor.style.display = display;
-                // }
+                if (this.anchor.style.display !== display) {
+                    this.anchor.style.display = display;
+                }
+                
+
             };
 
             /** Stops clicks/drags from bubbling up to the map. */
@@ -282,6 +301,7 @@
 
                         });
                     });
+
             };
         }
     </script>
