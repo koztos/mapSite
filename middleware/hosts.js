@@ -10,8 +10,7 @@ let hosts = new Map([
     ['Halifax', { address: '192.168.7.254', alive: false }],
     ['St. Johns, NB', { address: '192.168.3.1', alive: false }],
     ['St. Johns, NL', { address: '192.168.8.1', alive: false }],
-    ['Moncton', { address: '192.168.4.254', alive: false }],
-    ['Test Laptop', { address: '10.0.2.16', alive: false }]
+    ['Moncton', { address: '192.168.4.254', alive: false }]
 ]);
 
 async function setIsAlive(callback) {
