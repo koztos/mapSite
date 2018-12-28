@@ -2,6 +2,9 @@ body {
     padding: 0;
     margin: 0;
 }
+#serverInfo{
+    width:100%;
+}
 
 #map {
     height: 500px;

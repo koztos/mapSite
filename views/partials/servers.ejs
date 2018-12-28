@@ -1,0 +1,13 @@
+<div id="serverInfo">
+    <% for(var [name, server] of servers.entries()) { %>
+    <div id="<%= name %>">
+        <a href="<%= server.icon %>">
+            <img scr="<%= server.icon %>" width="32" height="32" />
+        </a>
+        <span id="serverName">
+            <%= name %></span>
+        <span id="serverAddress">
+            <%= server.address %> </span>
+    </div>
+    <% }; %>
+</div>
