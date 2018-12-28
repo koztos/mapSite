@@ -14,13 +14,19 @@ let hosts = new Map([
     ['Test Laptop', { address: '10.0.2.16', alive: false }]
 ]);
 
-async function setIsAlive() {
+async function setIsAlive(callback) {
     for (var [site,host] of hosts.entries()) {
         const isAlive = await ping.promise.probe(host.address);
         host.alive = isAlive.alive;
         
     }
     console.log(hosts);
+    callback();
 };
-setIsAlive();
+function wait30sec(){
+    setTimeout(function(){
+        setIsAlive(wait30sec)
+    },30000);
+}
+setIsAlive(wait30sec);
 module.exports = hosts;
