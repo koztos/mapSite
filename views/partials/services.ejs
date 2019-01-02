@@ -30,9 +30,10 @@
 
     function addMarker(sites) {
         for (var [site, location] of sites.entries()) {
+            let marker = null;
             if (document.getElementById(site) != null) {
                 if (document.getElementById(site).innerText.match('true')) {
-                    var marker = new google.maps.Marker({
+                    marker = new google.maps.Marker({
                         position: location.coor,
                         map: map,
                         animation: google.maps.Animation.DROP,
@@ -42,17 +43,17 @@
                     });
                     arrMarker.push(marker);
                     marker.addListener('click', () => {
-                        console.log(location.coor.lat);
-                        console.log(location.coor.lng);
+                        console.log(marker.position.lat());
+                        console.log(marker.position.lng());
                         popup = new Popup(
-                            new google.maps.LatLng(location.coor.lat, location.coor.lng),
+                            new google.maps.LatLng(marker.position.lat(), marker.position.lng()),
                             document.getElementById('content'),
                             marker.content,
                             map);
                         popup.setMap(map);
                     })
                 } else {
-                    var marker = new google.maps.Marker({
+                    marker = new google.maps.Marker({
                         position: location.coor,
                         map: map,
                         animation: google.maps.Animation.DROP,
@@ -62,18 +63,18 @@
                     });
                     arrMarker.push(marker);
                     marker.addListener('click', () => {
-                        console.log(location.coor.lat);
-                        console.log(location.coor.lng);
+                        console.log(marker.position.lat());
+                        console.log(marker.position.lng());
                         popup = new Popup(
-                            new google.maps.LatLng(location.coor.lat, location.coor.lng),
+                            new google.maps.LatLng(marker.position.lat(), marker.position.lng()),
                             document.getElementById('content'),
-                            location.content,
+                            marker.content,
                             map);
                         popup.setMap(map);
                     })
                 }
             } else {
-                var marker = new google.maps.Marker({
+                marker = new google.maps.Marker({
                     position: location.coor,
                     map: map,
                     animation: google.maps.Animation.DROP,
@@ -98,14 +99,14 @@
         //infoWindow.open(map, marker);
 
     }
-    function reloadMarkers() {
-        for (var [site, marker] of markerArray.entries()) {
-            marker.setMap(null);
-        }
-        arrMarker = [];
+    // function reloadMarkers() {
+    //     for (var [site, marker] of markerArray.entries()) {
+    //         marker.setMap(null);
+    //     }
+    //     arrMarker = [];
 
-        add
-    }
+    //     add
+    // }
     var markerArray = new Map([
         ['Brampton',
             {
