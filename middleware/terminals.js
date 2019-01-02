@@ -10,7 +10,8 @@ let terminals = new Map([
     ['Halifax', { address: '192.168.7.254', alive: false }],
     ['St. Johns, NB', { address: '192.168.3.1', alive: false }],
     ['St. Johns, NL', { address: '192.168.8.1', alive: false }],
-    ['Moncton', { address: '192.168.4.254', alive: false }]
+    ['Moncton', { address: '192.168.4.254', alive: false }],
+    ['My Phone', {address: '10.0.2.7', alive: false}]
 ]);
 
 async function setIsAlive(callback) {

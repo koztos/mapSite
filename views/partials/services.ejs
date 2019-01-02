@@ -1,5 +1,5 @@
 <% for(var [site, terminal] of terminals.entries()) { %>
-<div id="<%= site %>" style="display: none;">
+<div id="<%= site %>" style="display: block;">
     <span class="alive">
         <%= terminal.alive %></span>
     <span class="address">
@@ -11,7 +11,11 @@
 <div id="content"></div>
 
 <script>
+    var map;
+    var arrMarker = [];
     var popup, Popup;
+    var offline = 'http://i.imgur.com/417YviZ.png';
+    var online = 'http://i.imgur.com/ovI4Iso.png';
     function initMap() {
         definePopupClass();
         var options = {
@@ -19,117 +23,159 @@
             center: { lat: 48.4, lng: -89.843683 }
         };
 
-        var map = new google.maps.Map(document.getElementById('map'), options);
-        var markerArray = new Map([
-            ['Brampton',
-                {
-                    coor: { lat: 43.748650, lng: -80.99999 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Vancouver',
-                {
-                    coor: { lat: 49.188770, lng: -122.895640 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Calgary',
-                {
-                    coor: { lat: 51.070730, lng: -114.006580 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Goreway',
-                {
-                    coor: { lat: 43.744320, lng: -79.669830 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Ottawa',
-                {
-                    coor: { lat: 45.405240, lng: -75.613190 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Montreal',
-                {
-                    coor: { lat: 45.48027, lng: -73.777590 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Halifax',
-                {
-                    coor: { lat: 44.716670, lng: -63.598890 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['St. Johns, NB',
-                {
-                    coor: { lat: 45.213270, lng: -66.172920 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['St. Johns, NL',
-                {
-                    coor: { lat: 47.531280, lng: -52.840540 },
-                    content: "",
-                    iconImage: ""
-                }],
-            ['Moncton',
-                {
-                    coor: { lat: 46.101660, lng: -64.899060 },
-                    content: "",
-                    iconImage: ""
-                }]
-        ]);
+        map = new google.maps.Map(document.getElementById('map'), options);
 
-        var offline = 'http://i.imgur.com/417YviZ.png';
-        var online = 'http://i.imgur.com/ovI4Iso.png';
+        addMarker(markerArray);
+    }
 
-        for (var [site, marker] of markerArray.entries()) {
+    function addMarker(sites) {
+        for (var [site, location] of sites.entries()) {
             if (document.getElementById(site) != null) {
                 if (document.getElementById(site).innerText.match('true')) {
-                    marker.iconImage = online;
-                    marker.content = `${site}    ${document.getElementById(site).lastElementChild.innerText}`;
-                    addMarker(marker);
+                    var marker = new google.maps.Marker({
+                        position: location.coor,
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        title: site,
+                        icon: online,
+                        content: `${site}    ${document.getElementById(site).lastElementChild.innerText}`
+                    });
+                    arrMarker.push(marker);
+                    marker.addListener('click', () => {
+                        console.log(location.coor.lat);
+                        console.log(location.coor.lng);
+                        popup = new Popup(
+                            new google.maps.LatLng(location.coor.lat, location.coor.lng),
+                            document.getElementById('content'),
+                            marker.content,
+                            map);
+                        popup.setMap(map);
+                    })
                 } else {
-                    marker.iconImage = offline;
-                    marker.content = `${site}  ${document.getElementById(site).lastElementChild.innerText}`;
-                    addMarker(marker);
+                    var marker = new google.maps.Marker({
+                        position: location.coor,
+                        map: map,
+                        animation: google.maps.Animation.DROP,
+                        title: site,
+                        icon: offline,
+                        content: `${site}    ${document.getElementById(site).lastElementChild.innerText}`
+                    });
+                    arrMarker.push(marker);
+                    marker.addListener('click', () => {
+                        console.log(location.coor.lat);
+                        console.log(location.coor.lng);
+                        popup = new Popup(
+                            new google.maps.LatLng(location.coor.lat, location.coor.lng),
+                            document.getElementById('content'),
+                            location.content,
+                            map);
+                        popup.setMap(map);
+                    })
                 }
             } else {
-                addMarker(marker);
-                marker.content = 'no Default Gateway listed';
+                var marker = new google.maps.Marker({
+                    position: location.coor,
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    title: site,
+                    content: 'no Default Gateway listed'
+                });
+                arrMarker.push(marker);
+                marker.addListener('click', () => {
+                    console.log(location.coor.lat);
+                    console.log(location.coor.lng);
+                    popup = new Popup(
+                        new google.maps.LatLng(location.coor.lat, location.coor.lng),
+                        document.getElementById('content'),
+                        location.content,
+                        map);
+                    popup.setMap(map);
+                })
             };
-            marker.iconImage = offline;
-        }
-
-        function addMarker(props) {
-            var marker = new google.maps.Marker({
-                position: props.coor,
-                map: map,
-            });
-            if (props.iconImage) {
-                marker.setIcon(props.iconImage);
-            }
-
-
-            //infoWindow.open(map, marker);
-            marker.addListener('click', () => {
-                console.log(props.coor.lat);
-                console.log(props.coor.lng);
-                popup = new Popup(
-                    new google.maps.LatLng(props.coor.lat, props.coor.lng),
-                    document.getElementById('content'),
-                    props.content,
-                    map);
-                popup.setMap(map);
-            })
-
-
 
         }
+
+        //infoWindow.open(map, marker);
+
     }
+    function reloadMarkers() {
+        for (var [site, marker] of markerArray.entries()) {
+            marker.setMap(null);
+        }
+        arrMarker = [];
+
+        add
+    }
+    var markerArray = new Map([
+        ['Brampton',
+            {
+                coor: { lat: 43.748650, lng: -80.99999 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Vancouver',
+            {
+                coor: { lat: 49.188770, lng: -122.895640 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Calgary',
+            {
+                coor: { lat: 51.070730, lng: -114.006580 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Goreway',
+            {
+                coor: { lat: 43.744320, lng: -79.669830 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Ottawa',
+            {
+                coor: { lat: 45.405240, lng: -75.613190 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Montreal',
+            {
+                coor: { lat: 45.48027, lng: -73.777590 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Halifax',
+            {
+                coor: { lat: 44.716670, lng: -63.598890 },
+                content: "",
+                iconImage: ""
+            }],
+        ['St. Johns, NB',
+            {
+                coor: { lat: 45.213270, lng: -66.172920 },
+                content: "",
+                iconImage: ""
+            }],
+        ['St. Johns, NL',
+            {
+                coor: { lat: 47.531280, lng: -52.840540 },
+                content: "",
+                iconImage: ""
+            }],
+        ['Moncton',
+            {
+                coor: { lat: 46.101660, lng: -64.899060 },
+                content: "",
+                iconImage: ""
+            }],
+        ['My Phone',
+            {
+                coor: { lat: 46.101660, lng: -54.899060 },
+                content: "",
+                iconImage: ""
+            }]
+    ]);
+
+
     /** Defines the Popup class. */
     function definePopupClass() {
         /**
