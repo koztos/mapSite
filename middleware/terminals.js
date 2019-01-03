@@ -18,15 +18,14 @@ async function setIsAlive(callback) {
     for (var [site,terminal] of terminals.entries()) {
         const isAlive = await ping.promise.probe(terminal.address);
         terminal.alive = isAlive.alive;
-        
     }
-    console.log(terminals);
-    callback();
+    // console.log(terminals);
+    callback(terminals);
 };
 function wait30sec(){
     setTimeout(function(){
         setIsAlive(wait30sec)
-    },30000);
+    },5000);
 }
 setIsAlive(wait30sec);
 module.exports = terminals;
